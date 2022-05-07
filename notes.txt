@@ -1,0 +1,133 @@
+back-end part 
+
+we opened a folder to handle our database processes 
+
+mkdir back-end  
+
+// create  package.json
+npm init -y
+
+// install mongoose npm packet and create cors functions
+npm i express mongoose mongodb cors 
+
+create a index.js file to write down script 
+
+------------------------------------
+
+
+database part
+
+
+we need 3 schemas  in order to complete our database 
+
+it is nosql so there is no tables but we have collections
+and collections saves data in type like dictionary or json files 
+
+
+first schema is users
+
+//users schema
+{
+  name: {
+    type: String,
+    required: true,
+  },
+
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+
+  password: {
+    type: String,
+    required: true,
+  },
+
+  registerDate: {
+    type: Date,
+    default: Date.now,
+  },
+}
+
+
+//books schema
+{
+  title: {
+    type: String,
+    required: true,
+  },
+
+  authors: {
+    type: String,
+    required: true,
+  },
+
+  editors: {
+    type: String,
+    required: true,
+  },
+
+  ISBN: {
+    type: String,
+    required: true,
+  },
+
+  publishYear: {
+    type: Date,
+    required: false,
+  },
+
+  edition: {
+    type: Number,
+    required: true,
+  },
+
+  publisher: {
+    type: Number,
+    required: true,
+  },
+
+  pageCount: {
+    type: Number,
+    required: true,
+  },
+
+  language: {
+    type: String,
+    required: true,
+  },
+
+  numberofbook: {
+    type: Number,
+    required: true,
+  },
+}
+
+
+//borrow schema
+{
+  user: {
+    type: ObjectId,
+    required: true,
+  },
+
+  book: {
+    type: ObjectId,
+    required: true,
+  },
+
+  borrowedDate: {
+    type: Date,
+    default: Date.now,
+  },
+
+  returned: {
+    type: String,
+    default: false,
+  },
+}
+
+these schemas created in js file then executed in mongodb 
+
+
