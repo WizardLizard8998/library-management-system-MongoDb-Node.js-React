@@ -1,0 +1,32 @@
+.main-page{
+    display:flex;
+    flex-direction: column;
+    background-color: bisque;
+    height: 1800px;
+    
+}
+
+.user-form{
+    display:flex;
+    flex-direction: row;
+}
+
+.login-form{
+    display: flex;
+    flex-direction: column;
+    margin: 50px;
+    width: 500px;
+    height: 500px;
+    gap: 20px;
+    justify-content: center;
+}
+
+.register-form{
+    display: flex;
+    flex-direction: column;
+    margin: 50px;
+    width: 500px;
+    height: 500px;
+    gap: 20px;
+    justify-content: center;
+}

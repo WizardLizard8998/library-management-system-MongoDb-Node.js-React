@@ -142,6 +142,60 @@ app.get("/", (req, resp) => {
   // can be checked at http://localhost:5000
 });
 
+app.get("/getUsers/", async (req, resp) => {
+  try {
+    const res = await User.find().exec();
+
+    resp.send(res);
+
+    return res;
+  } catch (e) {
+    console.log(e);
+  }
+});
+
+/*
+  const res = await User.findOne(
+      { _id: null },
+      { registerDate: null },
+      { email: req.query.email },
+      { password: req.query.password },
+      (err, result) => {
+        if (err) {
+          console.log(err);
+          resp.send(err);
+        } else {
+          resp.send(result);
+        }
+      }
+    ).exec();
+    resp.send("asdşlkjasdfşlkjsdflşk");
+
+    resp.send(res);
+    return res;
+  } catch (e) {
+    console.log(e);
+  }
+*/
+
+app.get("/getLogin", async (req, resp) => {
+  console.log(req.query.email);
+  console.log(req.query.password);
+
+  try {
+    const res = await User.find({
+      email: req.query.email,
+      password: req.query.password,
+    });
+
+    resp.send(res);
+
+    return res;
+  } catch (e) {
+    console.log(e);
+  }
+});
+
 //User register endpoint
 app.post("/registerUser", async (req, resp) => {
   try {
@@ -157,6 +211,7 @@ app.post("/registerUser", async (req, resp) => {
       console.log(res);
     } else {
       console.log("user already registered");
+      alert("user already registered");
     }
   } catch (e) {
     console.log(e);
@@ -164,7 +219,7 @@ app.post("/registerUser", async (req, resp) => {
 });
 
 //addBook
-app.post("/addBook", async (req, resp) => {
+app.post("/AddBook", async (req, resp) => {
   try {
     const book = new Book(req.body);
 
@@ -183,8 +238,8 @@ app.post("/addBook", async (req, resp) => {
   }
 });
 
-//createBorrow 
-app.post("/createBorrow", async (req, resp) => {
+//createBorrow
+app.post("/CreateBorrow", async (req, resp) => {
   try {
     const borrow = new Borrow(req.body);
 
