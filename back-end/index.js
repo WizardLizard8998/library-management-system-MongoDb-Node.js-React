@@ -74,7 +74,7 @@ const booksSchema = new mongoose.Schema({
   },
 
   publisher: {
-    type: Number,
+    type: String,
     required: true,
   },
 
@@ -90,7 +90,7 @@ const booksSchema = new mongoose.Schema({
 
   numberofbook: {
     type: Number,
-    required: true,
+    required: false,
   },
 });
 
@@ -141,6 +141,8 @@ app.get("/", (req, resp) => {
   // listens at 5000
   // can be checked at http://localhost:5000
 });
+
+
 
 app.get("/getUsers/", async (req, resp) => {
   try {
@@ -223,20 +225,51 @@ app.post("/AddBook", async (req, resp) => {
   try {
     const book = new Book(req.body);
 
-    let res = await book.save();
-    res = res.toObject();
+    const tempBook = await Book.find({ ISBN: book.ISBN });
 
-    if (res) {
-      resp.send(req.body);
-
-      console.log(res);
+    if (tempBook[0] != null) {
+      await Book.findByIdAndUpdate(tempBook[0]._id, {
+        $inc: { numberofbook: + book.numberofbook },
+        $currentDate: { lastModified: true },
+      });
     } else {
-      console.log("book already saved");
+      book.numberofbook = 1;
+      let res = await book.save().then((resp) => {
+        console.log(resp);
+      });
+      res = res.toObject();
+
+      if (res) {
+        resp.send(req.body);
+
+        console.log(res);
+      } else {
+        console.log("book already saved");
+      }
     }
   } catch (e) {
     console.log(e);
   }
+
+  resp.sendStatus(resp.statusCode);
+  
 });
+
+
+app.get("/getBooks", async (req,resp) => {
+  
+  try {
+    const res = await Book.find().exec();
+
+    resp.send(res);
+
+    return res;
+  } catch (e) {
+    console.log(e);
+  }
+
+});
+
 
 //createBorrow
 app.post("/CreateBorrow", async (req, resp) => {
@@ -253,6 +286,15 @@ app.post("/CreateBorrow", async (req, resp) => {
     } else {
       console.log("already borrowed");
     }
+  } catch (e) {
+    console.log(e);
+  }
+});
+
+app.put("/UpdateBook", async (req, resp) => {
+  const book = new Book(req.body);
+
+  try {
   } catch (e) {
     console.log(e);
   }

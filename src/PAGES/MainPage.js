@@ -3,11 +3,14 @@ import { TextField } from "@mui/material";
 import { Button } from "@mui/material";
 import "./Pages.css";
 import { AccountContext } from "../DATA/Accountdata";
+import { useHistory } from "react-router-dom";
 
 function MainPage() {
   const [email, setEmail1] = useState("");
   const [password, setPassword1] = useState("");
   const [name, setName1] = useState("");
+
+  const history = useHistory();
 
   const {
     Name,
@@ -41,9 +44,15 @@ function MainPage() {
    await setDate(res[0].date)
 
     console.log(res);
-    console.log(Id + Name + Email + Password  );
+     console.log(Id + Name + Email + Password  );
     
     // login => if
+
+    if(Email == email && Password == password){
+     history.push("/BookPage");
+    }
+
+
   };
 
   const RegisterClick = async (e) => {

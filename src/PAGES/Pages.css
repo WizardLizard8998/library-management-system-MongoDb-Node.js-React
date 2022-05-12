@@ -1,32 +1,68 @@
-.main-page{
-    display:flex;
-    flex-direction: column;
-    background-color: bisque;
-    height: 1800px;
-    
+.main-page {
+  display: flex;
+  flex-direction: column;
+  background-color: bisque;
+  height: 1800px;
 }
 
-.user-form{
-    display:flex;
-    flex-direction: row;
+.user-form {
+  display: flex;
+  flex-direction: row;
 }
 
-.login-form{
-    display: flex;
-    flex-direction: column;
-    margin: 50px;
-    width: 500px;
-    height: 500px;
-    gap: 20px;
-    justify-content: center;
+.login-form {
+  display: flex;
+  flex-direction: column;
+  margin: 50px;
+  width: 500px;
+  height: 500px;
+  gap: 20px;
+  justify-content: center;
 }
 
-.register-form{
-    display: flex;
-    flex-direction: column;
-    margin: 50px;
-    width: 500px;
-    height: 500px;
-    gap: 20px;
-    justify-content: center;
+.register-form {
+  display: flex;
+  flex-direction: column;
+  margin: 50px;
+  width: 500px;
+  height: 500px;
+  gap: 20px;
+  justify-content: center;
+}
+
+.book-page {
+  display: flex;
+  flex-direction: column;
+  background-color: bisque;
+  height: auto;
+  width: auto;
+}
+
+.data-display {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 10%;
+  margin-top: 15%;
+  margin-left: 5%;
+  margin-right: 5%;
+  
+}
+
+.add-book {
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+  align-items: center;
+  gap: 10px 30px;
+  flex-grow: 2;
+}
+
+.add-book-row {
+  display: flex;
+  flex-direction: row;
+  gap: 50px;
+  align-self: center;
+  width: 50%;
 }
