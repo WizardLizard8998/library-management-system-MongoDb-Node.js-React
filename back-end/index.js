@@ -142,8 +142,6 @@ app.get("/", (req, resp) => {
   // can be checked at http://localhost:5000
 });
 
-
-
 app.get("/getUsers/", async (req, resp) => {
   try {
     const res = await User.find().exec();
@@ -229,11 +227,10 @@ app.post("/AddBook", async (req, resp) => {
 
     if (tempBook[0] != null) {
       await Book.findByIdAndUpdate(tempBook[0]._id, {
-        $inc: { numberofbook: + book.numberofbook },
+        $inc: { numberofbook: +book.numberofbook },
         $currentDate: { lastModified: true },
       });
     } else {
-      book.numberofbook = 1;
       let res = await book.save().then((resp) => {
         console.log(resp);
       });
@@ -252,12 +249,9 @@ app.post("/AddBook", async (req, resp) => {
   }
 
   resp.sendStatus(resp.statusCode);
-  
 });
 
-
-app.get("/getBooks", async (req,resp) => {
-  
+app.get("/getBooks", async (req, resp) => {
   try {
     const res = await Book.find().exec();
 
@@ -267,9 +261,7 @@ app.get("/getBooks", async (req,resp) => {
   } catch (e) {
     console.log(e);
   }
-
 });
-
 
 //createBorrow
 app.post("/CreateBorrow", async (req, resp) => {
@@ -291,10 +283,24 @@ app.post("/CreateBorrow", async (req, resp) => {
   }
 });
 
-app.put("/UpdateBook", async (req, resp) => {
+app.put("/UpdateBook/", async (req, resp) => {
   const book = new Book(req.body);
-
+  const tempBook = await Book.find({ ISBN: book.ISBN });
   try {
+    await Book.findByIdAndUpdate(tempBook[0]._id, {
+      $set: {
+        title: book[0].title,
+        authors: book[0].authors,
+        editors: book[0].editors,
+        ISBN: book[0].ISBN,
+        publishYear: book[0].publishYear,
+        edition: book[0].edition,
+        publisher: book[0].publisher,
+        pageCount: book[0].pageCount,
+        language: book[0].language,
+        numberofbook: book[0].numberofbook,
+      },
+    });
   } catch (e) {
     console.log(e);
   }

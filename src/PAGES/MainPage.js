@@ -10,8 +10,6 @@ function MainPage() {
   const [password, setPassword1] = useState("");
   const [name, setName1] = useState("");
 
-  const history = useHistory();
-
   const {
     Name,
     Email,
@@ -25,39 +23,36 @@ function MainPage() {
     setDate,
   } = useContext(AccountContext);
 
-  const LoginClick = async (e) => {
+  const history = useHistory();
+
+  const LoginClick = async () => {
     setEmail1(email);
     setPassword1(password);
 
-    let res = await fetch(
+    const res = await fetch(
       `http://localhost:5000/getLogin/?email=${email}&password=${password}`
     );
-    
 
-      
-   res = await res.json();
-    
-   await setId(res[0]._id);
-   await setName(res[0].name);
-   await setEmail(res[0].email);
-   await setPassword(res[0].password);
-   await setDate(res[0].date)
+    const data = await res
+      .json()
+      .then((resp) => {
+        setId(resp[0]._id);
+        setName(resp[0].name);
+        setEmail(resp[0].email);
+        setPassword(resp[0].password);
+        setDate(resp[0].date);
 
-    console.log(res);
-     console.log(Id + Name + Email + Password  );
-    
-    // login => if
-
-    if(Email == email && Password == password){
-     history.push("/BookPage");
-    }
-
-
+        if (resp[0] != null) {
+          history.push("/BookPage");
+          history.go();
+        }
+      })
+      .catch((e) => {
+        alert("couldnt log in");
+      });
   };
 
   const RegisterClick = async (e) => {
-    e.preventDefault();
-
     setEmail1(email);
     setName1(name);
     setPassword1(password);
@@ -76,6 +71,7 @@ function MainPage() {
       setName("");
       setPassword("");
       setEmail1("");
+      history.push("/BookPage");
     }
     if (!res) {
       alert("registered failed");

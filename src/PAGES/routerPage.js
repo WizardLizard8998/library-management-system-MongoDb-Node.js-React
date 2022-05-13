@@ -12,6 +12,7 @@ export default function RouterPage() {
           <Route exact path="/">
             <MainPage />
           </Route>
+
           <Route exact path="/BookPage">
             <BookPage />
           </Route>
