@@ -10,6 +10,16 @@ function MainPage() {
   const [password, setPassword1] = useState("");
   const [name, setName1] = useState("");
 
+
+  const [loginemail, setloginEmail] = useState("");
+  const [loginpassword, setloginPassword] = useState("");
+  
+
+  const [registeremail, setregisterEmail] = useState("");
+  const [registerpassword, setregisterPassword] = useState("");
+  const [registername, setregisterName] = useState("");
+
+
   const {
     Name,
     Email,
@@ -26,8 +36,8 @@ function MainPage() {
   const history = useHistory();
 
   const LoginClick = async () => {
-    setEmail1(email);
-    setPassword1(password);
+      setEmail1(loginemail);
+      setPassword1(loginpassword);
 
     const res = await fetch(
       `http://localhost:5000/getLogin/?email=${email}&password=${password}`
@@ -36,12 +46,14 @@ function MainPage() {
     const data = await res
       .json()
       .then((resp) => {
+
         setId(resp[0]._id);
         setName(resp[0].name);
         setEmail(resp[0].email);
         setPassword(resp[0].password);
         setDate(resp[0].date);
-
+        
+        alert(resp[0]._id)
         if (resp[0] != null) {
           history.push("/BookPage");
           history.go();
@@ -50,12 +62,19 @@ function MainPage() {
       .catch((e) => {
         alert("couldnt log in");
       });
+
+
+    //  alert(data)
+
   };
 
   const RegisterClick = async (e) => {
-    setEmail1(email);
-    setName1(name);
-    setPassword1(password);
+
+     setEmail1(registeremail);
+     setName1(registername);
+     setPassword1(registerpassword);
+
+     console.log(email,  password)
 
     let res = await fetch("http://localhost:5000/registerUser", {
       method: "post",
@@ -68,8 +87,8 @@ function MainPage() {
     console.warn(res);
     if (res) {
       alert("Registered success");
-      setName("");
-      setPassword("");
+      setName1("");
+      setPassword1("");
       setEmail1("");
       history.push("/BookPage");
     }
@@ -86,20 +105,24 @@ function MainPage() {
           <div class="login-form">
             <h2>User Login </h2>
             <TextField
-              id="email"
+              id="loginemail"
               label="email"
               variant="filled"
               type="email"
-              value={email}
-              onChange={(e) => setEmail1(e.target.value)}
+              value={loginemail}
+              onChange={(e) => {setloginEmail(e.target.value)
+                setEmail1(e.target.value)
+              }}
             />
             <TextField
-              id="password"
+              id="loginpassword"
               label="password"
               variant="filled"
               type="password"
-              value={password}
-              onChange={(e) => setPassword1(e.target.value)}
+              value={loginpassword}
+              onChange={(e) => {setloginPassword(e.target.value) 
+                setPassword1(e.target.value)}
+              }
             />
             <Button variant="outlined" onClick={LoginClick}>
               {" "}
@@ -109,26 +132,31 @@ function MainPage() {
           <div class="register-form">
             <h2>New User? Register Here!</h2>
             <TextField
-              id="name"
+              id="registername"
               label="name"
               variant="filled"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={registername}
+              onChange={(e) => {setregisterName(e.target.value)
+              setName1(e.target.value)}}
             />
             <TextField
-              id="email"
+              id="regsiteremail"
               label="email"
               variant="filled"
               type="email"
-              value={email}
-              onChange={(e) => setEmail1(e.target.value)}
+              value={registeremail}
+              onChange={(e) => {setregisterEmail(e.target.value)
+                setEmail1(e.target.value)
+              }}
             />
             <TextField
-              id="password"
+              id="registerpassword"
               label="password"
               variant="filled"
-              value={password}
-              onChange={(e) => setPassword1(e.target.value)}
+              value={registerpassword}
+              onChange={(e) => {setregisterPassword(e.target.value)
+                setPassword1(e.target.value)
+              }}
             />
             <Button variant="outlined" onClick={RegisterClick}>
               {" "}

@@ -94,6 +94,9 @@ const booksSchema = new mongoose.Schema({
   },
 });
 
+
+booksSchema.index({ title : "text", authors: "text" ,editors: "text", ISBN: "text" , publishYear :"text" , edition : "text",publisher :"text" , pageCount: "text",
+language: "text" })
 const Book = mongoose.model("Books", booksSchema);
 Book.createIndexes();
 
@@ -285,20 +288,19 @@ app.post("/CreateBorrow", async (req, resp) => {
 
 app.put("/UpdateBook/", async (req, resp) => {
   const book = new Book(req.body);
-  const tempBook = await Book.find({ ISBN: book.ISBN });
   try {
-    await Book.findByIdAndUpdate(tempBook[0]._id, {
+    await Book.findByIdAndUpdate(req.query.id, {
       $set: {
-        title: book[0].title,
-        authors: book[0].authors,
-        editors: book[0].editors,
-        ISBN: book[0].ISBN,
-        publishYear: book[0].publishYear,
-        edition: book[0].edition,
-        publisher: book[0].publisher,
-        pageCount: book[0].pageCount,
-        language: book[0].language,
-        numberofbook: book[0].numberofbook,
+        title: book.title,
+        authors: book.authors,
+        editors: book.editors,
+        ISBN: book.ISBN,
+        publishYear: book.publishYear,
+        edition: book.edition,
+        publisher: book.publisher,
+        pageCount: book.pageCount,
+        language: book.language,
+        numberofbook: book.numberofbook,
       },
     });
   } catch (e) {
@@ -306,4 +308,52 @@ app.put("/UpdateBook/", async (req, resp) => {
   }
 });
 
+app.delete("/DeleteBook", async (req, resp) => {
+  try {
+    await Book.findByIdAndDelete(req.query.id);
+
+    resp.sendStatus(resp.statusCode);
+  } catch (e) {
+    console.log(e);
+  }
+});
+
+app.get("/DetailedSearch/", async (req, resp) => {
+    console.log(req.query.txt)
+  try {
+    const res = await Book.find({
+      $text: req.query.txt,
+    }).then(res => {
+      console.log(res)
+    });
+
+    res = res.json();
+
+    console.log(res);
+    resp.send(res);
+  } catch (e) {
+    console.log(e);
+  }
+});
+
 app.listen(5000);
+
+
+
+app.search("/DetailedSearcha/",async (req,resp) => {
+
+  resp.send(req.query.txt);
+
+  try{
+
+    await Book.find({$where :  {title : req.query.txt} 
+      
+
+      })
+
+  }catch(e) {
+
+    resp.send(e);
+  }
+
+})

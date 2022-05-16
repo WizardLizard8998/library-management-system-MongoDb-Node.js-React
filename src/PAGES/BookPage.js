@@ -1,9 +1,20 @@
 import { Paper, Typography, Grid, TextField, Button } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "./Pages.css";
 import { AccountContext } from "../DATA/Accountdata";
 
 function BookPage(props) {
+  const {
+    ID,
+    Name,
+    Email,
+    Password,
+    setID,
+    setName,
+    setEmail,
+    setPassword,
+  } = useContext(AccountContext);
+
   const [title, setaddTitle] = useState();
   const [authors, setaddAuthors] = useState();
   const [editors, setaddEditors] = useState();
@@ -14,18 +25,18 @@ function BookPage(props) {
   const [pageCount, setaddPageCount] = useState();
   const [language, setaddLanguage] = useState();
   const [numberofbook, setaddNumberofbook] = useState(0);
-  const [ID, setID] = useState();
+  const [id, setid] = useState();
 
-  const [updatetitle, setupdatetitle] = useState();
-  const [updateauthors, setupdateauthors] = useState();
-  const [updateeditors, setupdateeditors] = useState();
-  const [updateISBN, setupdateISBN] = useState();
-  const [updatepublishYear, setupdatepublishYear] = useState();
-  const [updateedition, setupdateedition] = useState();
-  const [updatepublisher, setupdatepublisher] = useState();
-  const [updatepageCount, setupdatepageCount] = useState();
-  const [updatelanguage, setupdatelanguage] = useState();
-  const [updatenumberofbook, setupdatenumberofbook] = useState();
+  const [updatetitle, setupdatetitle] = useState("");
+  const [updateauthors, setupdateauthors] = useState("");
+  const [updateeditors, setupdateeditors] = useState("");
+  const [updateISBN, setupdateISBN] = useState("");
+  const [updatepublishYear, setupdatepublishYear] = useState("");
+  const [updateedition, setupdateedition] = useState("");
+  const [updatepublisher, setupdatepublisher] = useState("");
+  const [updatepageCount, setupdatepageCount] = useState("");
+  const [updatelanguage, setupdatelanguage] = useState("");
+  const [updatenumberofbook, setupdatenumberofbook] = useState("");
 
   function BookDisplay(props) {
     const {
@@ -55,7 +66,7 @@ function BookPage(props) {
     const [bookCount, setBookCount] = useState(pbookCount);
 
     const onClick = () => {
-      setID(_id);
+      setid(_id);
       setupdatetitle(ptitle);
       setupdateauthors(pauthors);
       setupdateeditors(peditors);
@@ -66,6 +77,16 @@ function BookPage(props) {
       setupdatepageCount(ppageCount);
       setupdatelanguage(planguage);
       setupdatenumberofbook(pbookCount);
+    };
+
+    const Delete = () => {
+      fetch(`http://localhost:5000/DeleteBook?id=${_id}`, { method: "delete" })
+        .then((resp) => {
+          alert(resp, "done");
+        })
+        .catch((e) => {
+          alert(e);
+        });
     };
 
     return (
@@ -121,6 +142,9 @@ function BookPage(props) {
                   <Button variant="p" onClick={onClick}>
                     Choose Book
                   </Button>
+                  <Button variant="p" onClick={Delete}>
+                    Delete Book Entry
+                  </Button>
                 </Grid>
               </Grid>
             </Grid>
@@ -133,12 +157,12 @@ function BookPage(props) {
   const [data, setData] = useState([]);
 
   useEffect(() => {
+    console.log(Name);
     fetch("http://localhost:5000/getBooks")
       .then((resp) => {
         return resp.json();
       })
       .then((data) => {
-        console.log(data);
         setData(data);
       })
       .catch((e) => {
@@ -178,9 +202,8 @@ function BookPage(props) {
   };
 
   const UpdateBook = () => {
-    //burası çalışmıyor buraya tekrar göz at 404 not found
-    fetch(`http://localhost:5000/UpdateBook/?id=${ID}`, {
-      method: "post",
+    fetch(`http://localhost:5000/UpdateBook/?id=${id}`, {
+      method: "put",
       body: JSON.stringify({
         title: updatetitle,
         authors: updateauthors,
@@ -209,7 +232,7 @@ function BookPage(props) {
   return (
     <>
       <div className="book-page">
-        <h1>asdasdasdasdasdasdas</h1>
+        <h1>Welcome , {Name} </h1>
 
         <div className="add-book">
           <h2>Here you can add books to our online library!</h2>
