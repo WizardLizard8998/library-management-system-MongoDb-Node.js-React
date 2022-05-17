@@ -66,3 +66,11 @@
   align-self: center;
   width: 50%;
 }
+
+
+.pop-up{
+  display: flex;
+  flex-direction: column;
+  width: 250px;
+  height: auto;
+}

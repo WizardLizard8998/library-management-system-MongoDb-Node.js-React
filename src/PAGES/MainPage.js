@@ -1,9 +1,11 @@
-import React, { useContext, useState } from "react";
+import React from  "react"; 
+import{ useContext, useEffect, useState } from "react";
 import { TextField } from "@mui/material";
 import { Button } from "@mui/material";
 import "./Pages.css";
 import { AccountContext } from "../DATA/Accountdata";
 import { useHistory } from "react-router-dom";
+import axios from "axios";
 
 function MainPage() {
   const [email, setEmail1] = useState("");
@@ -19,7 +21,6 @@ function MainPage() {
   const [registerpassword, setregisterPassword] = useState("");
   const [registername, setregisterName] = useState("");
 
-
   const {
     Name,
     Email,
@@ -33,40 +34,97 @@ function MainPage() {
     setDate,
   } = useContext(AccountContext);
 
+  let finres;
   const history = useHistory();
 
-  const LoginClick = async () => {
+  const [data,setData] = useState([]);
+
+  useEffect(() => {
+    console.log(Id,Name,Password,Email) 
+  }, [Email]);
+  
+  const LoginClick = async (e) => {
+    
       setEmail1(loginemail);
       setPassword1(loginpassword);
 
-    const res = await fetch(
+      /*
+   const res =  await fetch(
       `http://localhost:5000/getLogin/?email=${email}&password=${password}`
-    );
+    ).then((resp) => {
 
-    const data = await res
-      .json()
+    
+      return resp;
+
+    })
+    .catch((e) => {
+      alert(e);
+    });
+
+    finres = await res.json();
+
+   
+
+    console.log(finres[0])
+
+    await setData(finres[0])
+   
+  
+
+      setName(finres[0].name)
+      setEmail(finres[0].email)
+      setPassword(finres[0].password)
+      setId(finres[0]._id)
+     
+
+ 
+    console.log(finres[0].name)
+
+   
+    */
+   
+
+   axios
+   .get( `http://localhost:5000/getLogin/?email=${email}&password=${password}`)
+   .then((resp) => {
+
+    
+      setId(resp.data[0]._id)
+      setName(resp.data[0].name)
+      setEmail(resp.data[0].email)
+      setPassword(resp.data[0].password)
+     
+
+  })
+  .catch((e) => {
+    alert(e);
+  });
+
+  
+    /*
+      res
       .then((resp) => {
 
-        setId(resp[0]._id);
-        setName(resp[0].name);
-        setEmail(resp[0].email);
-        setPassword(resp[0].password);
-        setDate(resp[0].date);
+        setEmail(resp[0].email)
+
+        alert(Id)
+        setData(resp[0])
         
-        alert(resp[0]._id)
-        if (resp[0] != null) {
-          history.push("/BookPage");
-          history.go();
-        }
       })
       .catch((e) => {
         alert("couldnt log in");
       });
+      */
+    
+      if (Id != null) {
+      
+       history.push("/BookPage");
+       history.go();
+      }
+    };
 
+ 
 
-    //  alert(data)
-
-  };
 
   const RegisterClick = async (e) => {
 
@@ -124,7 +182,9 @@ function MainPage() {
                 setPassword1(e.target.value)}
               }
             />
-            <Button variant="outlined" onClick={LoginClick}>
+            <Button variant="outlined" onClick={LoginClick 
+            
+            }>
               {" "}
               Login
             </Button>

@@ -94,9 +94,17 @@ const booksSchema = new mongoose.Schema({
   },
 });
 
-
-booksSchema.index({ title : "text", authors: "text" ,editors: "text", ISBN: "text" , publishYear :"text" , edition : "text",publisher :"text" , pageCount: "text",
-language: "text" })
+booksSchema.index({
+  title: "text",
+  authors: "text",
+  editors: "text",
+  ISBN: "text",
+  publishYear: "text",
+  edition: "text",
+  publisher: "text",
+  pageCount: "text",
+  language: "text",
+});
 const Book = mongoose.model("Books", booksSchema);
 Book.createIndexes();
 
@@ -279,7 +287,7 @@ app.post("/CreateBorrow", async (req, resp) => {
 
       console.log(res);
     } else {
-      console.log("already borrowed");
+      console.log(resp);
     }
   } catch (e) {
     console.log(e);
@@ -319,15 +327,18 @@ app.delete("/DeleteBook", async (req, resp) => {
 });
 
 app.get("/DetailedSearch/", async (req, resp) => {
-    console.log(req.query.txt)
+  console.log(req.query.txt);
   try {
     const res = await Book.find({
-      $text: req.query.txt,
-    }).then(res => {
-      console.log(res)
+      $or: [
+        { title: "/" + req.query.txt + "/" },
+        { authors: "/" + req.query.txt + "/" },
+        { editors: "/" + req.query.txt + "/" },
+        { ISBN: "/" + req.query.txt + "/" },
+        { publisher: "/" + req.query.txt + "/" },
+        { language: "/" + req.query.txt + "/" },
+      ],
     });
-
-    res = res.json();
 
     console.log(res);
     resp.send(res);
@@ -337,23 +348,3 @@ app.get("/DetailedSearch/", async (req, resp) => {
 });
 
 app.listen(5000);
-
-
-
-app.search("/DetailedSearcha/",async (req,resp) => {
-
-  resp.send(req.query.txt);
-
-  try{
-
-    await Book.find({$where :  {title : req.query.txt} 
-      
-
-      })
-
-  }catch(e) {
-
-    resp.send(e);
-  }
-
-})

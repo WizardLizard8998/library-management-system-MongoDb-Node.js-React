@@ -6,18 +6,17 @@ import BookPage from "./BookPage";
 
 export default function RouterPage() {
   return (
-    <Router>
-      <div>
+    <div>
+      <Router>
         <Switch>
           <Route exact path="/">
             <MainPage />
           </Route>
-
           <Route exact path="/BookPage">
             <BookPage />
           </Route>
         </Switch>
-      </div>
-    </Router>
+      </Router>
+    </div>
   );
 }

@@ -1,19 +1,14 @@
 import { Paper, Typography, Grid, TextField, Button } from "@mui/material";
-import React, { useContext, useEffect, useState } from "react";
+import React from "react";
+import { useContext, useEffect, useState } from "react";
 import "./Pages.css";
 import { AccountContext } from "../DATA/Accountdata";
+import Popover from "@mui/material/Popover";
+import axios from "axios";
 
 function BookPage(props) {
-  const {
-    ID,
-    Name,
-    Email,
-    Password,
-    setID,
-    setName,
-    setEmail,
-    setPassword,
-  } = useContext(AccountContext);
+  const { Id, Name, Email, Password, setID, setName, setEmail, setPassword } =
+    useContext(AccountContext);
 
   const [title, setaddTitle] = useState();
   const [authors, setaddAuthors] = useState();
@@ -37,6 +32,48 @@ function BookPage(props) {
   const [updatepageCount, setupdatepageCount] = useState("");
   const [updatelanguage, setupdatelanguage] = useState("");
   const [updatenumberofbook, setupdatenumberofbook] = useState("");
+
+  const [borrowName, setborrowName] = useState();
+  const [borrowEmail, setborrowEmail] = useState();
+
+  function BasicPopover() {
+    const [anchorEl, setAnchorEl] = React.useState(null);
+
+    const handleClick = (event) => {
+      setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+      setAnchorEl(null);
+    };
+
+    const open = Boolean(anchorEl);
+    const id = open ? "simple-popover" : undefined;
+
+    return (
+      <div>
+        <Button aria-describedby={id} variant="p" onClick={handleClick}>
+          Borrow Book
+        </Button>
+        <Popover
+          id={id}
+          open={open}
+          anchorEl={anchorEl}
+          onClose={handleClose}
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "left",
+          }}
+        >
+          <div className="pop-up">
+            <TextField id="addedition" variant="filled" onChange={(e) => {}} />
+            <TextField id="addedition" variant="filled" onChange={(e) => {}} />
+            <Button variant="p">helloo </Button>
+          </div>
+        </Popover>
+      </div>
+    );
+  }
 
   function BookDisplay(props) {
     const {
@@ -87,6 +124,27 @@ function BookPage(props) {
         .catch((e) => {
           alert(e);
         });
+    };
+
+    let UserId = "6276c74aa20dc3d51ad6c70e";
+    let returndate = new Date();
+    returndate.setDate(returndate.getDate() + 5);
+
+    let borrowdata = {
+      user: UserId,
+      book: _id,
+      borrowedDate: Date.now(),
+      returned: returndate,
+    };
+
+    const Borrow = () => {
+      if (bookCount > 0) {
+        axios.post("http://localhost:5000/CreateBorrow", borrowdata);
+      }
+
+      axios.put(`http://localhost:5000/UpdateBook/?id=${_id}`, {
+        numberofbook: bookCount - 1,
+      });
     };
 
     return (
@@ -145,6 +203,9 @@ function BookPage(props) {
                   <Button variant="p" onClick={Delete}>
                     Delete Book Entry
                   </Button>
+                  <Button variant="p" onClick={Borrow}>
+                    Borrow book
+                  </Button>
                 </Grid>
               </Grid>
             </Grid>
@@ -157,7 +218,6 @@ function BookPage(props) {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    console.log(Name);
     fetch("http://localhost:5000/getBooks")
       .then((resp) => {
         return resp.json();
@@ -229,10 +289,16 @@ function BookPage(props) {
       });
   };
 
+  useEffect(() => {
+    console.log(Id, Name, Email);
+  }, [Id]);
+
   return (
     <>
       <div className="book-page">
-        <h1>Welcome , {Name} </h1>
+        <h1>
+          Welcome , {Email} {Name}{" "}
+        </h1>
 
         <div className="add-book">
           <h2>Here you can add books to our online library!</h2>
@@ -245,7 +311,7 @@ function BookPage(props) {
                 setaddTitle(e.target.value);
               }}
             />{" "}
-            <h3> Title</h3>
+            <h3> Title </h3>
           </div>
           <div className="add-book-row">
             {" "}
@@ -503,10 +569,11 @@ function BookPage(props) {
           <div className="add-book-row">
             {" "}
             <Button variant="outlined" color="inherit" onClick={UpdateBook}>
-              Add to the Library{" "}
+              Update in the Library{" "}
             </Button>
           </div>
         </div>
+        <div className="borrow-book"></div>
       </div>
     </>
   );

@@ -4,19 +4,19 @@ import { createContext, useState } from "react";
 const AccountContext = createContext();
 
 function AccountProvider(props) {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [date, setDate] = useState("");
+  const [Name, setName] = useState("");
+  const [Email, setEmail] = useState("");
+  const [Password, setPassword] = useState("");
+  const [Date, setDate] = useState("");
   const [Id, setId] = useState("");
-
+  
   return (
     <AccountContext.Provider
       value={{
-        Name: name,
-        Email: email,
-        Password: password,
-        Date: date,
+        Name: Name,
+        Email: Email,
+        Password: Password,
+        Date: Date,
         Id : Id,
         
         setName,
