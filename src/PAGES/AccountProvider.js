@@ -9,7 +9,7 @@ function AccountProvider(props) {
   const [UID, setUID] = useState("");
   const [Name,setName] = useState("");  
   
-  console.log(Mail)
+
   return (
     <AccountContext.Provider
       value={{

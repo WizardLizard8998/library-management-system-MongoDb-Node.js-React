@@ -69,20 +69,7 @@ function MainPage() {
         {
           history.push("/BookPage")
         }
-      /*
-      res
-      .then((resp) => {
 
-        setEmail(resp[0].email)
-
-        alert(Id)
-        setData(resp[0])
-        
-      })
-      .catch((e) => {
-        alert("couldnt log in");
-      });
-      */
     
     };
 
@@ -111,7 +98,7 @@ function MainPage() {
       setName1("");
       setPassword1("");
       setEmail1("");
-      history.push("/BookPage");
+     
     }
     if (!res) {
       alert("registered failed");

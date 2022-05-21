@@ -274,6 +274,18 @@ app.get("/getBooks", async (req, resp) => {
   }
 });
 
+app.get("/getBooksById/", async (req, resp) => {
+  try {
+    const res = await Book.findById(req.query.ID);
+
+    resp.send(res);
+
+    return res;
+  } catch (e) {
+    console.log(e);
+  }
+});
+
 //createBorrow
 app.post("/CreateBorrow", async (req, resp) => {
   try {
@@ -289,6 +301,29 @@ app.post("/CreateBorrow", async (req, resp) => {
     } else {
       console.log(resp);
     }
+  } catch (e) {
+    console.log(e);
+  }
+});
+
+
+app.delete("/DeleteBorrow/", async (req,resp) =>{
+  try{
+    await Borrow.findByIdAndDelete(req.query.ID)
+
+  }catch(e)
+  {
+    console.log(e)
+  }
+
+
+});
+
+app.get("/getBorrowById/", async (req, resp) => {
+  try {
+    const res = await Borrow.find({ user: req.query.ID });
+    resp.send(res);
+    return res;
   } catch (e) {
     console.log(e);
   }

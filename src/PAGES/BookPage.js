@@ -5,6 +5,7 @@ import "./Pages.css";
 import Popover from "@mui/material/Popover";
 import axios from "axios";
 import { AccountContext } from "./AccountProvider";
+import { render } from "react-dom";
 
 export default function BookPage() {
   const [title, setaddTitle] = useState();
@@ -30,11 +31,101 @@ export default function BookPage() {
   const [updatelanguage, setupdatelanguage] = useState("");
   const [updatenumberofbook, setupdatenumberofbook] = useState("");
 
-  const [borrowName, setborrowName] = useState();
-  const [borrowEmail, setborrowEmail] = useState();
+  const { UID, Name, Mail, Password, setUID, setName, setEmail, setPassword } =
+      useContext(AccountContext);
+
+      console.log(UID,Name,Mail)
+
+
+
+
+  function Borrowedbooks(props) {
+
+    const {
+        index,
+        _id,
+        btitle,
+        bauthors,
+        bedition,
+        bpublisher,
+        blanguage,
+        bISBN,
+        bdate,
+        breturndate,
+    }= props; 
+
+    console.log(index)
+
+    const  onClick = () =>{
+      axios
+      .delete(`http://localhost:5000/DeleteBorrow/?ID=${borrow[index]._id}`)
+      .then(resp => {
+        resp.send(resp)
+      })
+
+
+    }
+
+    return(
+      <>
+      <Paper
+        sx={{
+          p: 2,
+          margin: "10px",
+          maxWidth: 400,
+          flexGrow: 1,
+          backgroundColor: (theme) =>
+            theme.palette.mode === "dark" ? "#1A2027" : "#fff",
+        }}
+      >
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm container>
+            <Grid item xs container direction="column" spacing={2}>
+              <Grid item xs>
+                <Typography gutterBottom variant="h6" component="div">
+                  {btitle}
+                </Typography>
+                <Typography variant="body2" gutterBottom>
+                  {"Authors: " + bauthors}
+                </Typography>
+                <Typography variant="body2" gutterBottom>
+                  {"Edition : " + bedition + "\n"}
+                </Typography>
+                <Typography variant="body2" gutterBottom>
+                  {"Publisher: " + bpublisher + "\n"}
+                </Typography>
+                <Typography variant="body2" gutterBottom>
+                  {"Language : " + blanguage + "\n"}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {"ISBN :" + bISBN}
+                </Typography>
+                <Typography variant="subtitle1" component="div">
+                  {"Borrow date " + bdate.substring(0,10)}
+                </Typography>
+                <Typography variant="subtitle1" component="div">
+                  {"Return date " + breturndate.substring(0,10)}
+                </Typography>
+              </Grid>
+              <Grid item>
+                <Button variant="p" onClick={onClick}>
+                  Return Book
+                </Button>
+
+              </Grid>
+            </Grid>
+          </Grid>
+        </Grid>
+      </Paper>
+    </>
+    )
+
+  }
+
 
   function BookDisplay(props) {
     const {
+      index,
       ptitle,
       pauthors,
       peditors,
@@ -47,17 +138,8 @@ export default function BookPage() {
       pbookCount,
       _id,
     } = props;
-    /* 
-        const [title,setTitle] = useState(" ");
-        const [authors,setAuthors]=useState(" ");
-        const [editors,setEditors]=useState(" ");    
-        const [publishYear,setPublishYear]=useState(" ");
-        const [edition,setEdition]=useState(" ");
-        const [publisher,setPublisher]=useState(" ");
-        const [language,setLanguage]=useState(" ");
-        const [pageCount,setPageCount]=useState(" ");
-        const [ISBN,setISBN]=useState(" ");
-       */
+
+  
     const [bookCount, setBookCount] = useState(pbookCount);
 
     const onClick = () => {
@@ -84,25 +166,32 @@ export default function BookPage() {
         });
     };
 
-    let UserId = "6276c74aa20dc3d51ad6c70e";
+    let borrowdate = new Date();
+    borrowdate = Date.now()
     let returndate = new Date();
     returndate.setDate(returndate.getDate() + 5);
 
     let borrowdata = {
-      user: UserId,
+      user: UID,
       book: _id,
-      borrowedDate: Date.now(),
+      borrowedDate: borrowdate,
       returned: returndate,
     };
 
     const Borrow = () => {
       if (bookCount > 0) {
-        axios.post("http://localhost:5000/CreateBorrow", borrowdata);
+        axios.post("http://localhost:5000/CreateBorrow", borrowdata)
+        .then(resp =>{
+          console.log(resp)
+        })
+        .catch(e =>{
+          console.log(e)
+        })
+        
+        axios.put(`http://localhost:5000/UpdateBook/?id=${_id}`, {
+          numberofbook: bookCount - 1,
+        });
       }
-
-      axios.put(`http://localhost:5000/UpdateBook/?id=${_id}`, {
-        numberofbook: bookCount - 1,
-      });
     };
 
     return (
@@ -153,6 +242,9 @@ export default function BookPage() {
                   <Typography variant="subtitle1" component="div">
                     {"Count : " + bookCount}
                   </Typography>
+                  <Typography variant="subtitle1" component="div">
+                    {"Count : " + index}
+                  </Typography>
                 </Grid>
                 <Grid item>
                   <Button variant="p" onClick={onClick}>
@@ -174,6 +266,8 @@ export default function BookPage() {
   }
 
   const [data, setData] = useState([]);
+  const [borrow,setBorrow] = useState([]);
+  const [brwbook,setBrwbook] =useState([]);
 
   useEffect(() => {
     fetch("http://localhost:5000/getBooks")
@@ -186,7 +280,38 @@ export default function BookPage() {
       .catch((e) => {
         alert(e);
       });
+      
+
   }, []);
+
+  useEffect(()=>      {
+    fetch(`http://localhost:5000/getBorrowById/?ID=${UID}`)
+    .then((resp) =>{
+      return resp.json();
+    })
+    .then((borrow) =>{
+      setBorrow(borrow);
+      //console.log(borrow[0].book);
+      
+    })
+    .catch(e =>{
+      alert(e);
+    })
+
+    console.log(borrow);
+    var i;
+   
+    for( i = 0; i<borrow.length;i++){
+    axios
+    .get(`http://localhost:5000/getBooksById/?ID=${borrow[i].book}`)
+    .then(resp=>{
+      setBrwbook(brwbook => [...brwbook, resp.data])
+      console.log(resp.data)
+    });
+
+    }
+    console.log(brwbook)
+  },[])
 
   const AddBook = () => {
     console.log(
@@ -247,22 +372,53 @@ export default function BookPage() {
       });
   };
 
-  const { Id, Name, Email, Password, setID, setName, setEmail, setPassword } =
-    useContext(AccountContext);
+  const getBorrowedBooks = () =>{
+    fetch(`http://localhost:5000/getBorrowById/?ID=${UID}`)
+    .then((resp) =>{
+      return resp.json();
+    })
+    .then((borrow) =>{
+      setBorrow(borrow);
+      //console.log(borrow[0].book);
+      
+    })
+    .catch(e =>{
+      alert(e);
+    })
+
+    console.log(borrow);
+    var i;
+   
+    for( i = 0; i<borrow.length;i++){
+    axios
+    .get(`http://localhost:5000/getBooksById/?ID=${borrow[i].book}`)
+    .then(resp=>{
+      setBrwbook(brwbook => [...brwbook, resp.data])
+      console.log(resp.data)
+    });
+
+    }
+    console.log(brwbook)
+  }
 
   useEffect(() => {
-    console.log(Id, Name, Email);
-  }, [Id]);
+    console.log(UID, Name, Mail);
+  }, [UID]);
+
+
+
+
 
   return (
     <>
       <div className="book-page">
         <h1>
-          Welcome , {Id} {Email} {Name}
+          Welcome ,  {Name}
         </h1>
 
         <div className="add-book">
           <h2>Here you can add books to our online library!</h2>
+          <h4>If book already exist, it just updates the number of books </h4>
           <div className="add-book-row">
             {" "}
             <TextField
@@ -384,10 +540,11 @@ export default function BookPage() {
         </div>
 
         <div className="data-display">
+         
           {data &&
-            data.map((info) => (
+            data.map((info, key) => (
               <BookDisplay
-                key={info.key}
+                index={key}
                 _id={info._id}
                 ptitle={info.title}
                 pauthors={info.authors}
@@ -534,7 +691,31 @@ export default function BookPage() {
             </Button>
           </div>
         </div>
-        <div className="borrow-book"></div>
+        <div >
+          <div className="borrow-button-display">
+          <Button  variant="outlined" color="inherit" onClick={getBorrowedBooks}>Display Borrowed Books</Button>
+          </div>
+        <div className="data-display">
+          
+        {
+            brwbook.map((info, index) => 
+              <Borrowedbooks
+                index={index}
+                _id={info._id}
+                btitle={info.title}
+                bauthors={info.authors}
+                bedition={info.edition}
+                bpublisher={info.publisher}
+                blanguage={info.language}
+                bISBN={info.ISBN}
+                bdate={borrow[index].borrowedDate}
+                breturndate={borrow[index].returned}
+              />        
+            
+            )}  
+            
+        </div>
+        </div>
       </div>
     </>
   );
