@@ -3,9 +3,9 @@ import{ useContext, useEffect, useState } from "react";
 import { TextField } from "@mui/material";
 import { Button } from "@mui/material";
 import "./Pages.css";
-import { AccountContext } from "../DATA/Accountdata";
-import { useHistory } from "react-router-dom";
+import { AccountContext } from "./AccountProvider";
 import axios from "axios";
+import {useHistory} from "react-router-dom"
 
 function MainPage() {
   const [email, setEmail1] = useState("");
@@ -23,85 +23,53 @@ function MainPage() {
 
   const {
     Name,
-    Email,
+    Mail,
     Password,
-    Id,
-    Date,
+    UID,
+ 
     setName,
     setPassword,
-    setEmail,
-    setId,
-    setDate,
+    setMail,
+    setUID,
+ 
   } = useContext(AccountContext);
 
-  let finres;
-  const history = useHistory();
+ 
+  const history =useHistory();
 
   const [data,setData] = useState([]);
 
-  useEffect(() => {
-    console.log(Id,Name,Password,Email) 
-  }, [Email]);
-  
-  const LoginClick = async (e) => {
+
+  const LoginClick =  () => {
     
       setEmail1(loginemail);
       setPassword1(loginpassword);
 
+
+      axios
+      .get( `http://localhost:5000/getLogin/?email=${email}&password=${password}`)
+      .then((resp) => {
+
+        
+          setUID(resp.data[0]._id)
+          setName(resp.data[0].name)
+          setMail(resp.data[0].email)
+          setPassword(resp.data[0].password)
+
+          console.log(UID)
+         
+          
+          
+        })
+        .catch((e) => {
+          alert(e);
+        });
+        
+        if(Name != null)
+        {
+          history.push("/BookPage")
+        }
       /*
-   const res =  await fetch(
-      `http://localhost:5000/getLogin/?email=${email}&password=${password}`
-    ).then((resp) => {
-
-    
-      return resp;
-
-    })
-    .catch((e) => {
-      alert(e);
-    });
-
-    finres = await res.json();
-
-   
-
-    console.log(finres[0])
-
-    await setData(finres[0])
-   
-  
-
-      setName(finres[0].name)
-      setEmail(finres[0].email)
-      setPassword(finres[0].password)
-      setId(finres[0]._id)
-     
-
- 
-    console.log(finres[0].name)
-
-   
-    */
-   
-
-   axios
-   .get( `http://localhost:5000/getLogin/?email=${email}&password=${password}`)
-   .then((resp) => {
-
-    
-      setId(resp.data[0]._id)
-      setName(resp.data[0].name)
-      setEmail(resp.data[0].email)
-      setPassword(resp.data[0].password)
-     
-
-  })
-  .catch((e) => {
-    alert(e);
-  });
-
-  
-    /*
       res
       .then((resp) => {
 
@@ -116,11 +84,6 @@ function MainPage() {
       });
       */
     
-      if (Id != null) {
-      
-       history.push("/BookPage");
-       history.go();
-      }
     };
 
  
@@ -170,6 +133,7 @@ function MainPage() {
               value={loginemail}
               onChange={(e) => {setloginEmail(e.target.value)
                 setEmail1(e.target.value)
+                setMail(e.target.value)
               }}
             />
             <TextField
@@ -179,8 +143,9 @@ function MainPage() {
               type="password"
               value={loginpassword}
               onChange={(e) => {setloginPassword(e.target.value) 
-                setPassword1(e.target.value)}
-              }
+                setPassword1(e.target.value)
+                setPassword(e.target.value)
+              }}
             />
             <Button variant="outlined" onClick={LoginClick 
             

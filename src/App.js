@@ -1,6 +1,7 @@
 import React from 'react';
-import RouterPage from './PAGES/routerPage';
-import { AccountProvider } from "./DATA/Accountdata";
+import { AccountProvider } from './PAGES/AccountProvider.js';
+import RouterPage from "./PAGES/RouterPage.js";
+
 
 
 function App() {

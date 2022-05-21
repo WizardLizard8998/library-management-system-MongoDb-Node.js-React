@@ -1,15 +1,12 @@
-import { Paper, Typography, Grid, TextField, Button } from "@mui/material";
 import React from "react";
+import { Paper, Typography, Grid, TextField, Button } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import "./Pages.css";
-import { AccountContext } from "../DATA/Accountdata";
 import Popover from "@mui/material/Popover";
 import axios from "axios";
+import { AccountContext } from "./AccountProvider";
 
-function BookPage(props) {
-  const { Id, Name, Email, Password, setID, setName, setEmail, setPassword } =
-    useContext(AccountContext);
-
+export default function BookPage() {
   const [title, setaddTitle] = useState();
   const [authors, setaddAuthors] = useState();
   const [editors, setaddEditors] = useState();
@@ -35,45 +32,6 @@ function BookPage(props) {
 
   const [borrowName, setborrowName] = useState();
   const [borrowEmail, setborrowEmail] = useState();
-
-  function BasicPopover() {
-    const [anchorEl, setAnchorEl] = React.useState(null);
-
-    const handleClick = (event) => {
-      setAnchorEl(event.currentTarget);
-    };
-
-    const handleClose = () => {
-      setAnchorEl(null);
-    };
-
-    const open = Boolean(anchorEl);
-    const id = open ? "simple-popover" : undefined;
-
-    return (
-      <div>
-        <Button aria-describedby={id} variant="p" onClick={handleClick}>
-          Borrow Book
-        </Button>
-        <Popover
-          id={id}
-          open={open}
-          anchorEl={anchorEl}
-          onClose={handleClose}
-          anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "left",
-          }}
-        >
-          <div className="pop-up">
-            <TextField id="addedition" variant="filled" onChange={(e) => {}} />
-            <TextField id="addedition" variant="filled" onChange={(e) => {}} />
-            <Button variant="p">helloo </Button>
-          </div>
-        </Popover>
-      </div>
-    );
-  }
 
   function BookDisplay(props) {
     const {
@@ -289,6 +247,9 @@ function BookPage(props) {
       });
   };
 
+  const { Id, Name, Email, Password, setID, setName, setEmail, setPassword } =
+    useContext(AccountContext);
+
   useEffect(() => {
     console.log(Id, Name, Email);
   }, [Id]);
@@ -297,7 +258,7 @@ function BookPage(props) {
     <>
       <div className="book-page">
         <h1>
-          Welcome , {Email} {Name}{" "}
+          Welcome , {Id} {Email} {Name}
         </h1>
 
         <div className="add-book">
@@ -578,5 +539,3 @@ function BookPage(props) {
     </>
   );
 }
-
-export default BookPage;
