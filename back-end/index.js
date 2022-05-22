@@ -95,15 +95,7 @@ const booksSchema = new mongoose.Schema({
 });
 
 booksSchema.index({
-  title: "text",
-  authors: "text",
-  editors: "text",
-  ISBN: "text",
-  publishYear: "text",
-  edition: "text",
-  publisher: "text",
-  pageCount: "text",
-  language: "text",
+    "$**": "text" 
 });
 const Book = mongoose.model("Books", booksSchema);
 Book.createIndexes();
@@ -310,7 +302,7 @@ app.post("/CreateBorrow", async (req, resp) => {
 app.delete("/DeleteBorrow/", async (req,resp) =>{
   try{
     await Borrow.findByIdAndDelete(req.query.ID)
-
+    resp.send(resp)
   }catch(e)
   {
     console.log(e)
@@ -346,6 +338,8 @@ app.put("/UpdateBook/", async (req, resp) => {
         numberofbook: book.numberofbook,
       },
     });
+
+    resp.send(resp)
   } catch (e) {
     console.log(e);
   }
@@ -365,14 +359,7 @@ app.get("/DetailedSearch/", async (req, resp) => {
   console.log(req.query.txt);
   try {
     const res = await Book.find({
-      $or: [
-        { title: "/" + req.query.txt + "/" },
-        { authors: "/" + req.query.txt + "/" },
-        { editors: "/" + req.query.txt + "/" },
-        { ISBN: "/" + req.query.txt + "/" },
-        { publisher: "/" + req.query.txt + "/" },
-        { language: "/" + req.query.txt + "/" },
-      ],
+      $text : {$search : req.query.txt}
     });
 
     console.log(res);

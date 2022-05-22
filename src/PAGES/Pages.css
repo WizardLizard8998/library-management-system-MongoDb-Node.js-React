@@ -30,6 +30,14 @@
   justify-content: center;
 }
 
+.search{
+  display:flex;
+  margin: 50px;
+  width: 500px;
+  gap:20px;
+  
+}
+
 .book-page {
   display: flex;
   flex-direction: column;

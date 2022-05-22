@@ -241,10 +241,7 @@ export default function BookPage() {
                   </Typography>
                   <Typography variant="subtitle1" component="div">
                     {"Count : " + bookCount}
-                  </Typography>
-                  <Typography variant="subtitle1" component="div">
-                    {"Count : " + index}
-                  </Typography>
+                    </Typography>
                 </Grid>
                 <Grid item>
                   <Button variant="p" onClick={onClick}>
@@ -284,7 +281,7 @@ export default function BookPage() {
 
   }, []);
 
-  useEffect(()=>      {
+  useEffect(()=>  {
     fetch(`http://localhost:5000/getBorrowById/?ID=${UID}`)
     .then((resp) =>{
       return resp.json();
@@ -342,6 +339,9 @@ export default function BookPage() {
       }),
       headers: { "Content-type": "application/json" },
     }).then((resp) => alert(resp.status, "book added"));
+
+
+
   };
 
   const UpdateBook = () => {
@@ -373,6 +373,9 @@ export default function BookPage() {
   };
 
   const getBorrowedBooks = () =>{
+
+    setBrwbook([]);
+
     fetch(`http://localhost:5000/getBorrowById/?ID=${UID}`)
     .then((resp) =>{
       return resp.json();
@@ -405,7 +408,18 @@ export default function BookPage() {
     console.log(UID, Name, Mail);
   }, [UID]);
 
-
+  const Refresh = () =>{
+    fetch("http://localhost:5000/getBooks")
+    .then((resp) => {
+      return resp.json();
+    })
+    .then((data) => {
+      setData(data);
+    })
+    .catch((e) => {
+      alert(e);
+    });
+  }
 
 
 
@@ -539,8 +553,8 @@ export default function BookPage() {
           </div>
         </div>
 
+         <Button variant="outlined" color="inherit" onClick={Refresh}>Refresh Book info </Button>
         <div className="data-display">
-         
           {data &&
             data.map((info, key) => (
               <BookDisplay
