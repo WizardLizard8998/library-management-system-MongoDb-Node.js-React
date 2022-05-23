@@ -711,7 +711,7 @@ export default function BookPage() {
           </div>
         <div className="data-display">
           
-        {
+        {brwbook&&
             brwbook.map((info, index) => 
               <Borrowedbooks
                 index={index}

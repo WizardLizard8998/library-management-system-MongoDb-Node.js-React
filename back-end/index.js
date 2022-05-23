@@ -157,29 +157,7 @@ app.get("/getUsers/", async (req, resp) => {
   }
 });
 
-/*
-  const res = await User.findOne(
-      { _id: null },
-      { registerDate: null },
-      { email: req.query.email },
-      { password: req.query.password },
-      (err, result) => {
-        if (err) {
-          console.log(err);
-          resp.send(err);
-        } else {
-          resp.send(result);
-        }
-      }
-    ).exec();
-    resp.send("asdşlkjasdfşlkjsdflşk");
 
-    resp.send(res);
-    return res;
-  } catch (e) {
-    console.log(e);
-  }
-*/
 
 app.get("/getLogin", async (req, resp) => {
   console.log(req.query.email);
@@ -303,6 +281,7 @@ app.delete("/DeleteBorrow/", async (req,resp) =>{
   try{
     await Borrow.findByIdAndDelete(req.query.ID)
     resp.send(resp)
+    resp.send(resp.statusCode)
   }catch(e)
   {
     console.log(e)
